@@ -43,27 +43,55 @@ contract Token {
     {   
         // Require that sender has enough token to spend
         require(balanceOf[msg.sender] >= _value);
-        require(_to != address(0));
 
-        // Deduct token from spender 
-        balanceOf[msg.sender] = balanceOf[msg.sender] - _value;
-        // Credit token to receiver
-        balanceOf[_to] = balanceOf[_to] + _value;
-        
-        //Emit Event
-        emit Transfer(msg.sender, _to, _value);
+        _transfer(msg.sender, _to, _value);
 
         return true;
     }
+
+    function _transfer(
+        address _from,
+        address _to,
+        uint256 _value
+    ) internal {
+        require(_to != address(0));
+
+        // Deduct token from spender 
+        balanceOf[_from] = balanceOf[_from] - _value;
+        // Credits token to receiver
+        balanceOf[_to] = balanceOf[_to] + _value;
+
+        //Emit Event
+        emit Transfer(_from, _to, _value);
+    }
+
 
     function approve(address _spender, uint256 _value) 
         public 
         returns (bool success)
     {
-        require(_spender != address(0));
+        require(_spender != address(0), 'Address cannot be zero');
         allowance[msg.sender][_spender] = _value;
 
         emit Approval(msg.sender, _spender, _value);
+        return true;
+    }
+
+    function transferFrom(address _from, address _to, uint256 _value) 
+        public 
+        returns (bool success)
+    {
+        // value is less then available value 
+        require(_value <= balanceOf[_from]);
+        // value is less then the allowed value
+        require(_value <= allowance[_from][msg.sender]);
+
+        // once we have spent the value now we decrease 'value' from allowance
+        // it is to avoid double spending
+        allowance[_from][msg.sender] = allowance[_from][msg.sender] - _value;
+
+        _transfer(_from, _to, _value);
+
         return true;
     }
 
