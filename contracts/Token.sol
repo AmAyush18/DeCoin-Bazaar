@@ -82,9 +82,9 @@ contract Token {
         returns (bool success)
     {
         // value is less then available value 
-        require(_value <= balanceOf[_from]);
+        require(_value <= balanceOf[_from], 'Insufficient Balance');
         // value is less then the allowed value
-        require(_value <= allowance[_from][msg.sender]);
+        require(_value <= allowance[_from][msg.sender], 'Exceeded the allowed value');
 
         // once we have spent the value now we decrease 'value' from allowance
         // it is to avoid double spending
