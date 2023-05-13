@@ -186,6 +186,7 @@ describe('Exchange', () => {
 
         describe('Failure', () => {
             it('rejects with no balance', async () => {
+                // we try to make order without depositing any token
                 expect(exchange.connect(user1).makeOrder(token2.address, tokens(1), token1.address, tokens(1))).to.be.reverted
             })
         })
