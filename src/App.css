@@ -171,6 +171,11 @@ small {
   transform: translate(0, -50%);
 }
 
+.exchange__header--networks option:hover {
+  background: var(--clr-blue);
+  border: none;
+}
+
 .exchange__header--account {
   background: var(--clr-secondary);
 
