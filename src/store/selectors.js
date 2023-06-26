@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { ethers } from "ethers";
 import moment from "moment";
-import { get, groupBy, reject, maxBy, minBy, cloneWith } from 'lodash';
+import { get, groupBy, reject, maxBy, minBy } from 'lodash';
 
 const GREEN = '#25CE8F'
 const RED = '#F45353'
@@ -80,7 +80,7 @@ const decorateOrder = (order, tokens) => {
 
     // Note: DeCo is considered token0, mETH is considered token1
     // Example: giving mETH in change for DeCo
-    if(order.tokenGive == tokens[1].address){
+    if(order.tokenGive === tokens[1].address){
         token0Amount = order.amountGive  // The amount of DeCo we are giving
         token1Amount = order.amountGet   // The amount of mETH we want
     }
@@ -167,7 +167,60 @@ const tokenPriceClass = (tokenPrice, orderId, previousOrder) => {
     }
 }
 
-//------------ ORDER BOOK ---------------
+// ---------------- MY FILLED ORDERS ------------------
+
+export const myFilledOrdersSelector = createSelector(
+    account,
+    tokens,
+    filledOrders,
+    (account, tokens, orders) => {
+      if (!tokens[0] || !tokens[1]) { return }
+
+      // Find our orders
+      orders = orders.filter((o) => o.user === account || o.creator === account)
+      // Filter orders for current trading pair
+      orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+      orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
+
+      // Sort by date descending
+      orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+
+      // Decorate orders - add display attributes
+      orders = decorateMyFilledOrders(orders, account, tokens)
+
+      return orders
+  }
+)
+
+const decorateMyFilledOrders = (orders, account, tokens) => {
+  return(
+    orders.map((order) => {
+      order = decorateOrder(order, tokens)
+      order = decorateMyFilledOrder(order, account, tokens)
+      return(order)
+    })
+  )
+}
+
+const decorateMyFilledOrder = (order, account, tokens) => {
+  const myOrder = order.creator === account
+
+  let orderType
+  if(myOrder) {
+    orderType = order.tokenGive === tokens[1].address ? 'buy' : 'sell'
+  } else {
+    orderType = order.tokenGive === tokens[1].address ? 'sell' : 'buy'
+  }
+
+  return({
+    ...order,
+    orderType,
+    orderClass: (orderType === 'buy' ? GREEN : RED),
+    orderSign: (orderType === 'buy' ? '+' : '-')
+  })
+}
+
+//----------------- ORDER BOOK ------------------------
 
 export const orderBookSelector = createSelector(
     openOrders, 
