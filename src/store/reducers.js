@@ -96,30 +96,42 @@ export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
 
         //--------ORDERS LOADED (CANCELLED, FILLED & ALL) ---------
 
-        case 'CANCELLED_ORDERS_LOADED':
+        case 'ORDER_CANCEL_REQUEST':
             return {
                 ...state,
-                cancelledOrders: {
-                    loaded: true,
-                    data: action.cancelledOrders
-                }
-            }
-        
-        case 'FILLED_ORDERS_LOADED':
-            return {
-                ...state,
-                filledOrders: {
-                    loaded: true,
-                    data: action.filledOrders
+                transaction: {
+                    transactionType: 'Cancel',
+                    isPending: true,
+                    isSuccessful: false
                 }
             }
 
-        case 'ALL_ORDERS_LOADED':
+        case 'ORDER_CANCEL_SUCCESS':
             return {
                 ...state,
-                allOrders: {
-                    loaded: true,
-                    data: action.allOrders
+                transaction: {
+                    transactionType: 'Cancel',
+                    isPending: false,
+                    isSuccessful: true
+                },
+                cancelledOrders: {
+                    ...state.cancelledOrders,
+                    data: [
+                        ...state.cancelledOrders.data,
+                        action.order
+                    ]
+                },
+                events: [action.event, ...state.events]
+            }
+
+        case 'ORDER_CANCEL_FAIL':
+            return {
+                ...state,
+                transaction: {
+                    transactionType: 'Cancel',
+                    isPending: false,
+                    isSuccessful: false,
+                    isError: true
                 }
             }
 

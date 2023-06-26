@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { myOpenOrdersSelector, 
     myFilledOrdersSelector 
 } from "../store/selectors";
+
+import { cancelOrder } from "../store/interactions";
 
 import sort from '../assets/sort.svg'
 
@@ -11,11 +13,14 @@ import Banner from "./Banner";
 
 const Transactions = () => {
     const [showMyOrders, setShowMyOrders] = useState(true)
+
+    const provider = useSelector(state => state.provider.connection)
+    const exchange = useSelector(state => state.exchange.contract)
     const symbols = useSelector(state => state.tokens.symbols)
     const myOpenOrders = useSelector(myOpenOrdersSelector)
     const myFilledOrders = useSelector(myFilledOrdersSelector)
 
-    if(myFilledOrders) {console.log(myFilledOrders)}
+    const dispatch = useDispatch()
 
     const tradeRef = useRef(null)
     const orderRef = useRef(null)
@@ -30,7 +35,10 @@ const Transactions = () => {
             tradeRef.current.className = 'tab'
             setShowMyOrders(true)
         }
-        // console.log(`${e.target.className}`)
+    }
+    
+    const cancelHandler = (order) => {
+        cancelOrder(provider, exchange, order, dispatch)
     }
 
     return (
@@ -64,7 +72,7 @@ const Transactions = () => {
                                         <tr key={index}>
                                             <td style={{ color: `${order.orderTypeClass}` }}>{order.token0Amount}</td>
                                             <td>{order.tokenPrice}</td>
-                                            <td>{/* TODO: Cancel Order */}</td>
+                                            <td><button className="button--sm" onClick={() => cancelHandler(order)} >Cancel</button></td>
                                         </tr>
                                     )
                                 })}
@@ -100,7 +108,6 @@ const Transactions = () => {
                                 <td>{order.formattedTimestamp}</td>
                                 <td style={{ color: `${order.orderClass}` }}>{order.orderSign}{order.token0Amount}</td>
                                 <td>{order.tokenPrice}</td>
-                                {console.log(`${order.tokenPrice}`)}
                             </tr>
                         )
                     })}
