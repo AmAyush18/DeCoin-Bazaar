@@ -80,6 +80,9 @@ const DEFAULT_EXCHANGE_STATE = {
         loaded: false,
         data: []
     },
+    cancelledOrders : {
+        data: []
+    },
     events: []
   }
 
