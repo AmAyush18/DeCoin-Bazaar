@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { ethers } from 'ethers';
 import config from '../config.json';
-import TOKEN_ABI from '../abis/Token.json';
 
 import { 
   loadProvider, 

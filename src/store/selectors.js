@@ -34,7 +34,7 @@ export const myEventsSelector = createSelector(
     account,
     events,
     (account, events) => {
-        const event = events.filter((e) => e.args.user === account)
+        events = events.filter((e) => e.args.user === account)
         return events
     }
 )
