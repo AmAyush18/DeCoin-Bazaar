@@ -14,7 +14,19 @@
         },
         "exploreURL" : "#"
     },
-    "42": {
-        "exploreURL" : "https://kovan.etherscan.io/"
+    "80001": {
+        "exchange": {
+            "address": "0xb9A53C1E1290810464688B3CF86539116ccFeF39"
+        },
+        "DeCo": {
+            "address": "0x87a2d9C8b5d633bB173774e8eA4e36E32b5890d9"
+        },
+        "mETH": {
+            "address": "0xADDdCeFA7B9Fc2ef495d449E0BA760f564545274"
+        },
+        "mDAI": {
+            "address": "0x923074f68097A73eD4cFE5D27f9B6BCda2E915Ce"
+        },
+        "exploreURL" : "https://mumbai.polygonscan.com/"
     }
 }
