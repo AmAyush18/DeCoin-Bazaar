@@ -279,7 +279,7 @@ export const exchange = (state = DEFAULT_EXCHANGE_STATE, action) => {
             if(state && state.allOrders && state.allOrders.data){
                 index = state.allOrders.data.findIndex(order => (order.id) === (action.orderId))
             }
-
+            
             if(index === -1){
                 data = [...state.allOrders.data, action.order]
             } else {
