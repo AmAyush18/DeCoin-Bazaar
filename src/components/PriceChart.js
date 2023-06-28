@@ -20,8 +20,12 @@ const PriceChart = () => {
       <div className="component exchange__chart">
         <div className='component__header flex-between'>
           <div className='flex'>
-  
-            <h2>{symbols && `${symbols[0]}/${symbols[1]}`}</h2>
+
+            {account && symbols && symbols[0] !== undefined && symbols[1] !== undefined ? (
+              <h2>{symbols && `${symbols[0]}/${symbols[1]}`}</h2>
+            ) : (
+              <h2>{''}</h2>
+            )}
 
             {priceChart && (
 
